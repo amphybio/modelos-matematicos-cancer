@@ -89,6 +89,7 @@ n5(x) = n0*exp(lambda5*x)
 # lines: define representação em linhas
 # lc (linecolor): define cor
 # lw (linewidth): define espessura
+# /Symbol: expressa simbolos especiais (Ex. l para letra grega lambda)
 plot n1(x) title "{/Symbol l} > 0" with lines lc rgb "red" lw 2, \
      n2(x) title "{/Symbol l} > 0" with lines lc rgb "brown" lw 2, \
      n3(x) title "{/Symbol l} = 0" with lines lc rgb "black" lw 2, \
