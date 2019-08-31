@@ -14,9 +14,9 @@
 #   along with program.  If not, see <http://www.gnu.org/licenses/>.
 
 #===============================================================================
-#       ARQUIVO:  exponencial.plt
+#       ARQUIVO:  logistico_populacao.plt
 #
-#     DESCRIÇÃO:  Script gnuplot que gera grafícos do modelo exponencial
+#     DESCRIÇÃO:  Script gnuplot que gera grafícos do modelo logístico
 #
 #        OPÇÕES:  ---
 #    REQUISITOS:  gnuplot
@@ -39,17 +39,20 @@ set size 1.4, 0.618034
 # "Helvetica" 25: define padrão para tipo e tamanho da fonte
 set terminal postscript portrait enhanced color lw 2 "Helvetica" 25
 
-# Definir nome e extensão do arquivo de saída
-set output "exponencial.eps"
+# Definir nome e extensão do arquivo de saída.
+set output "logistico_populacao.eps"
 
 # Definir legenda dos eixos x(xtics) e y(ytics).
-# unset: remove todas as legendas do eixo
-unset xtics
-set ytics ("10^3" 1000)
+# auto: permite que o gnuplot decida a escala da legenda no eixo.
+set xtics auto
+set ytics ("0" 0, "" 25, "50" 50, "" 75, "100" 100)
+
+# Definir tics apenas na base e à esquerda.
+set tics nomirror
 
 # Definir os valores mínimos e máximos dos eixos.
-set xr [0:2]
-set yr [0:5000]
+set xr [0:40]
+set yr [0:105]
 
 # Definir legenda dos eixos.
 set xlabel "{/Helvetica Tempo (UA)}"
@@ -58,41 +61,38 @@ set ylabel "{/Helvetica Densidade (UA)}"
 # Definir título da figura.
 set title "{/Helvetica Crescimento tumoral}"
 
-# Definir posição da legenda do gráfico.
-set key left top
+# Definir gráfico sem legenda.
+unset key
+
+# Definir grade.
+set grid
 
 # Variáveis das funções. Valores inteiros devem ser escritos seguidos
 # de ponto e zero (##.0) para que sejam representados como números do
 # conjunto dos reais.
 
-# n0: população inicial.
-n0 = 1000.0
+# K: capacidade.
+K = 100.0
+
+# c0: tamanho inicial.
+c0 = 1.0
 
 # lambda#: valores para taxa de crescimento.
-lambda1 = 1.0
-lambda2 = 0.5
-lambda3 = 0
-lambda4 = -0.5
-lambda5 = -2.0
+lambda1=0.25
+lambda2=0.5
+lambda3=0.75
 
-# n#(x): Função exponencial. n#(x) se diferencia nos valores do
+# c#(x): Função logística da poulação. c#(x) se diferencia nos valores do
 # parâmetro lambda.
 # x: tempo. O gnuplot varia de forma automática o valor desse parâmetro.
-n1(x) = n0*exp(lambda1*x)
-n2(x) = n0*exp(lambda2*x)
-n3(x) = n0*exp(lambda3*x)
-n4(x) = n0*exp(lambda4*x)
-n5(x) = n0*exp(lambda5*x)
+c1(x) = (c0*K)/((K-c0)*exp(-lambda1*x)+c0)
+c2(x) = (c0*K)/((K-c0)*exp(-lambda2*x)+c0)
+c3(x) = (c0*K)/((K-c0)*exp(-lambda3*x)+c0)
 
 # Desenhar as saídas das funções
-# title: define legenda dos dados representados
 # lines: define representação em linhas
 # lc (linecolor): define cor
 # lw (linewidth): define espessura
-# /Symbol: expressa simbolos especiais (Ex. l para letra grega lambda)
-plot n1(x) title "{/Symbol l} > 0" with lines lc rgb "red" lw 2, \
-     n2(x) title "{/Symbol l} > 0" with lines lc rgb "brown" lw 2, \
-     n3(x) title "{/Symbol l} = 0" with lines lc rgb "black" lw 2, \
-     n4(x) title "{/Symbol l} < 0" with lines lc rgb "navy" lw 2, \
-     n5(x) title "{/Symbol l} < 0" with lines lc rgb "blue" lw 2
-
+plot c1(x) with lines lc rgb "red" lw 2, \
+     c2(x) with lines lc rgb "blue" lw 2, \
+     c3(x) with lines lc rgb "green" lw 2

@@ -14,9 +14,9 @@
 #   along with program.  If not, see <http://www.gnu.org/licenses/>.
 
 #===============================================================================
-#       ARQUIVO:  exponencial.plt
+#       ARQUIVO:  logistico_taxa.plt
 #
-#     DESCRIÇÃO:  Script gnuplot que gera grafícos do modelo exponencial
+#     DESCRIÇÃO:  Script gnuplot que gera grafícos do modelo logístico
 #
 #        OPÇÕES:  ---
 #    REQUISITOS:  gnuplot
@@ -37,52 +37,57 @@ set size 1.4, 0.618034
 # enhanced: melhorar fontes
 # lw (linewidth): define escala padrão da espessura das linhas
 # "Helvetica" 25: define padrão para tipo e tamanho da fonte
-set terminal postscript portrait enhanced color lw 2 "Helvetica" 25
+set terminal postscript portrait enhanced color lw 2 "Helvetica" 25 dashed
 
-# Definir nome e extensão do arquivo de saída
-set output "exponencial.eps"
+# Definir nome e extensão do arquivo de saída.
+set output "logistico_taxa.eps"
 
 # Definir legenda dos eixos x(xtics) e y(ytics).
-# unset: remove todas as legendas do eixo
-unset xtics
-set ytics ("10^3" 1000)
+# auto: permite que o gnuplot decida a escala da legenda no eixo.
+set xtics auto
+set ytics ("0" 0,"" 0.25, "0.5" 0.50, "" 0.75, "1" 1 )
+
+# Definir tics apenas na base e à esquerda.
+set tics nomirror
 
 # Definir os valores mínimos e máximos dos eixos.
-set xr [0:2]
-set yr [0:5000]
+set xr [0:40]
+set yr [0:1.05]
 
 # Definir legenda dos eixos.
 set xlabel "{/Helvetica Tempo (UA)}"
-set ylabel "{/Helvetica Densidade (UA)}"
+set ylabel "{/Helvetica Taxa}"
 
 # Definir título da figura.
-set title "{/Helvetica Crescimento tumoral}"
+set title "{/Helvetica Taxa de crescimento tumoral {/Helvetica-Italic per capita}}"
 
 # Definir posição da legenda do gráfico.
-set key left top
+set key right top
+
+# Definir grade.
+set grid
 
 # Variáveis das funções. Valores inteiros devem ser escritos seguidos
 # de ponto e zero (##.0) para que sejam representados como números do
 # conjunto dos reais.
 
-# n0: população inicial.
-n0 = 1000.0
+# K: capacidade.
+K = 100.0
+
+# c0: tamanho inicial.
+c0 = 1.0
 
 # lambda#: valores para taxa de crescimento.
-lambda1 = 1.0
-lambda2 = 0.5
-lambda3 = 0
-lambda4 = -0.5
-lambda5 = -2.0
+lambda1=0.25
+lambda2=0.5
+lambda3=0.75
 
-# n#(x): Função exponencial. n#(x) se diferencia nos valores do
+# c#(x): Função logística da taxa. c#(x) se diferencia nos valores do
 # parâmetro lambda.
 # x: tempo. O gnuplot varia de forma automática o valor desse parâmetro.
-n1(x) = n0*exp(lambda1*x)
-n2(x) = n0*exp(lambda2*x)
-n3(x) = n0*exp(lambda3*x)
-n4(x) = n0*exp(lambda4*x)
-n5(x) = n0*exp(lambda5*x)
+c1(x) = 1-(c0/((K-c0)*exp(-lambda1*x)+c0))
+c2(x) = 1-(c0/((K-c0)*exp(-lambda2*x)+c0))
+c3(x) = 1-(c0/((K-c0)*exp(-lambda3*x)+c0))
 
 # Desenhar as saídas das funções
 # title: define legenda dos dados representados
@@ -90,9 +95,6 @@ n5(x) = n0*exp(lambda5*x)
 # lc (linecolor): define cor
 # lw (linewidth): define espessura
 # /Symbol: expressa simbolos especiais (Ex. l para letra grega lambda)
-plot n1(x) title "{/Symbol l} > 0" with lines lc rgb "red" lw 2, \
-     n2(x) title "{/Symbol l} > 0" with lines lc rgb "brown" lw 2, \
-     n3(x) title "{/Symbol l} = 0" with lines lc rgb "black" lw 2, \
-     n4(x) title "{/Symbol l} < 0" with lines lc rgb "navy" lw 2, \
-     n5(x) title "{/Symbol l} < 0" with lines lc rgb "blue" lw 2
-
+plot c1(x) title "{/Symbol l} = 0.25" with lines lc rgb "red" lw 2, \
+     c2(x) title "{/Symbol l} = 0.50" with lines lc rgb "blue" lw 2, \
+     c3(x) title "{/Symbol l} = 0.75" with lines lc rgb "green" lw 2
