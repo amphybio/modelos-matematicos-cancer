@@ -53,7 +53,7 @@ gráfico.
 
   4) Executar o *script* usando o gnuplot:
 
-     gnuplot exponencial.plt
+    gnuplot exponencial.plt
 
   Os comandos acima são um exemplo para o caso que se deseja gerar os
   gráficos do modelo exponencial. Para gerar os gráficos dos demais
