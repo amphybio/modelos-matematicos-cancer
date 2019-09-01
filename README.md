@@ -5,8 +5,8 @@ usados para o estudo dos fenômenos ligados a carcinogênese. A
 estrutura de pastas se encontra da seguinte forma:
 
   - Nome do modelo
-    - *scripts* gnuplot
-    - figura exemplo EPS
+    - *script* gnuplot (arquivo plt)
+    - figura exemplo   (arquivo tif)
 
 Os *scripts* possuem comentários, indicados por **#**, antes de cada
 instrução com objetivo de elucidar sua finalidade para a geração do
@@ -60,9 +60,10 @@ gráfico.
   modelos, basta alterar o diretório (passo 3) e o nome do *script*
   (passo 4).
 
-  O arquivo gerado terá a extensão EPS (*Encapsulated PostScript*),
-  mas caso desejável é possível alterar sua extensão para outros
-  formatos através do ImageMagick. Por exemplo o formato *tif*:
+  O arquivo gerado estará no formato *eps* (*Encapsulated PostScript*,
+  um formato vetorizado), mas caso desejável é possível converter para
+  outros formatos de arquivo através do ImageMagick. Como, por
+  exemplo, o formato *tif*:
 
     convert -flatten -density 300 -depth 8 -compress lzw exponencial.eps exponencial.tif
 
