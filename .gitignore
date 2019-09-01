@@ -2,6 +2,8 @@
 # Created by https://www.gitignore.io/api/c,r,c++,latex,emacs,linux,python
 # Edit at https://www.gitignore.io/?templates=c,r,c++,latex,emacs,linux,python
 
+makefile
+
 ### C ###
 # Prerequisites
 *.d

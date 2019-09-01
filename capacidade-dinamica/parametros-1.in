@@ -1,0 +1,15 @@
+Parametros
+#Eq1
+lambda=0.192
+##
+#Eq2
+phi=5.85
+psi=0.00873
+##
+==>IntlCndtns
+x=10.
+K=20.
+==>NumSimParms
+h=0.001
+t=0.
+n=60000
