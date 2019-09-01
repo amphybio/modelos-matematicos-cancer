@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *===============================================================================
+ *==============================================================================
  *       ARQUIVO:  crescdinam.c
  *
  *     DESCRIÇÃO: Programa para cálculo do crescimento tumoral considerando que
@@ -29,24 +29,27 @@
  *        VERSÃO:  1.0
  *       CRIAÇÃO:  29/08/2019
  *       REVISÃO:  01/09/2019 Alan U. Sabino <alan.sabino@usp.br> (1)
- *===============================================================================
+ *==============================================================================
  */
 
 #include <stdio.h>
-#include <malloc.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include "sys/time.h"
-#include <unistd.h> /* for get opt */
+#include <unistd.h>
 
-/*************** constants ********************************/
+/* =============================== CONSTANTES =============================== */
 
-#define OPTS "u" /* for the output type */
+#define OPTS "u"
+#define XPNT 0.6666666666666667
+#define numero_parametros 3
 
-/*** help ***/
 static const char usage[] =
-  "\t Usage: ./crescdinam <input file name>.in <output file name>.out <log file name>.log\n\n";
+  "\t Uso: ./crescdinam <nome do arquivo de entrada>.in <nome do arquivo\
+de saída>.out <nome do arquivo de log>.log \n\n";
+
+/* ================================ FUNÇÕES ================================= */
 
 long double coeff_f1(long double lambda, long double x, long double K)
 {
@@ -58,68 +61,74 @@ long double coeff_f1(long double lambda, long double x, long double K)
 
 long double coeff_f2(long double phi, long double psi, long double x, long double K)
 {
-  long double XPNT=0.6666666666666667;
-
   long double f2;
   f2 = phi*x-psi*K*pow(x,XPNT);
   return f2;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
-  int cc; // parses command line options
+  int cc;
 
   optarg = NULL;
-  while ( ( cc=getopt(argc,argv,OPTS))!=-1){
-    switch (cc) {
-    case 'u':
-      printf("%s",usage);
-      exit(0);
-      break;
+  while ( ( cc=getopt(argc,argv,OPTS))!=-1)
+    {
+      switch (cc)
+        {
+        case 'u':
+          printf("%s",usage);
+          exit(0);
+          break;
+        }
     }
-  }
 
-  /* Aqui declaramos as variáveis usadas nesse código */
+  /* ============================== VARIÁVEIS  ============================== */
 
-  int i, j;	//inteiros para contagem nos laços
+  /* inteiros para contagem nos laços */
+  int i, j;
 
-  // --- eq. 1: on x ---/
+  /* --- eq. 1: on x ---
+
+     lambda: taxa de crescimento das células tumorais
+     x: densidade de células tumorais
+  */
   long double lambda, x;
-  /*
-    lambda: taxa de crescimento das células tumorais
-    x: densidade de células tumorais
+
+  /* --- eq. 2: on K ---
+
+     K: fator de capacidade do tumor
+     psi: constante de crescimento da capacidade
+     phi: constante de decaimento da capacidade
   */
-  // --- eq. 2: on K ---/
   long double K, phi, psi;
-  /*
-    K: fator de capacidade do tumor
-    psi: constante de crescimento da capacidade
-    phi: constante de decaimento da capacidade
+
+  /* --- Numerical solution parameters ---
+
+     h: passo de integração;
+     t: tempo em unidades arbitrárias.
   */
-
-  // --- Numerical solution parameters ---//
   long double h,t;
-  // h: passo de integração; t: tempo em unidades arbitrárias.
-  unsigned long long int n;
-  // número de passos de integração
 
-  // ********************************************************* //
+  /* n:  número de passos de integração */
+  unsigned long long int n;
 
   /* Aqui introduzimos as funções de leitura de variáveis
      nos arquivos de entrada, e os arquivos log e de saída do
      programa.
   */
-
   char infile[80], outfile[80];		//files
   char logfile[80], tmp[80];
   FILE * fin, * fout, * flog;
   struct timeval start, end;
   float all_time;
 
-  if (argc < 4) {
-    printf("Please add 3 parameter: inputfile, outputfile, logfile\n");
-    exit(0);
-  }
+  if (argc-1 < numero_parametros)
+    {
+      printf("Por favor, passar 3 parâmetros: arquivo de entrada,\
+ arquivo de saída e arquivo de log.\n");
+      exit(0);
+    }
 
   strcpy(infile, argv[argc-3]);
   strcpy(outfile, argv[argc-2]);
@@ -129,19 +138,20 @@ int main(int argc, char *argv[]) {
   strncat(tmp, ">> ", 3);
   strncat(tmp, logfile, strlen(logfile));
   flog = fopen(logfile, "w");
-  fprintf(flog, "------------Start time------------\n");
+  fprintf(flog, "------------ Inicio ------------\n");
   fclose(flog);
   if(system(tmp)) printf("Ok");
 
   gettimeofday( & start, NULL);
 
-  /* -------------------------------------------------------------------*/
-
   fin = fopen(infile, "r");
-  if (fin == NULL) {
-    printf("File %s is  not exist\n", infile);
-    exit(0);
-  }
+
+  if (fin == NULL)
+    {
+      printf("File %s is  not exist\n", infile);
+      exit(0);
+    }
+
   if ((fscanf(fin, "Parametros\n"))) printf("Error: Parametros\n");
   if ((fscanf(fin, "#Eq1\n"))) printf("Error: Eq1\n");
   if (!(fscanf(fin, "lambda=%Lf\n", &lambda ))) printf("Error: variable lambda\n");
@@ -162,24 +172,6 @@ int main(int argc, char *argv[]) {
   if (!(fscanf(fin, "n=%llu\n", &n ))) printf("Error: variable n\n");
 
   fclose(fin);
-
-  printf("Parametros\n");
-  printf("#Eq1\n");
-  printf("lambda=%Lf\n",lambda);
-  printf("##\n");
-  printf("#Eq2\n");
-  printf("phi=%Lf\n",phi);
-  printf("psi=%Lf\n",psi);
-  printf("##\n");
-
-  printf("==>IntlCndtns\n");
-  printf("x=%Lf\n",x);
-  printf("K=%Lf\n",K);
-
-  printf("==>NumSimParms\n");
-  printf("h=%Lf\n",h);
-  printf("t=%Lf\n",t);
-  printf("n=%llu\n",n);
 
   flog = fopen(logfile, "a");
 
@@ -206,41 +198,48 @@ int main(int argc, char *argv[]) {
   coeff_f1(lambda, x, K);
   coeff_f2(phi, psi, x, K);
 
+  long double A11,
+              A12,
+              A21,
+              A22,
+              A31,
+              A32,
+              A41,
+              A42;
+
   fprintf(fout,"%Lf \t %Lf \t %Lf\n",t,x,K);
-  printf("t=%Lf \t x=%Lf \t K=%Lf\n",t,x,K);
 
-  for (i=0;i<n;i++){
+  for (i=0;i<n;i++)
+    {
+      A11 = coeff_f1(lambda, x, K);
+      A12 = coeff_f2(phi, psi, x, K);
 
-    long double A11 = coeff_f1(lambda, x, K);
-    long double A12 = coeff_f2(phi, psi, x, K);
+      A21 = coeff_f1(lambda, x + h*0.5*A11, K + h*0.5*A12);
+      A22 = coeff_f2(phi, psi, x + h*0.5*A11, K + h*0.5*A12);
 
-    long double A21 = coeff_f1(lambda, x + h*0.5*A11, K + h*0.5*A12);
-    long double A22 = coeff_f2(phi, psi, x + h*0.5*A11, K + h*0.5*A12);
+      A31 = coeff_f1(lambda, x + h*0.5*A21, K + h*0.5*A22);
+      A32 = coeff_f2(phi, psi, x + h*0.5*A21, K + h*0.5*A22);
 
-    long double A31 = coeff_f1(lambda, x + h*0.5*A21, K + h*0.5*A22);
-    long double A32 = coeff_f2(phi, psi, x + h*0.5*A21, K + h*0.5*A22);
+      A41 = coeff_f1(lambda, x + h*A31, K + h*A32);
+      A42 = coeff_f2(phi, psi, x + h*A31, K + h*A32);
 
-    long double A41 = coeff_f1(lambda, x + h*A31, K + h*A32);
-    long double A42 = coeff_f2(phi, psi, x + h*A31, K + h*A32);
+      x += (A11+2.*A21+2.*A31+A41)*h/6.;
+      K += (A12+2.*A22+2.*A32+A42)*h/6.;
 
-    x += (A11+2.*A21+2.*A31+A41)*h/6.;// + 0*B.arr[i]*sigma[0]*sqrt(h);
-    K += (A12+2.*A22+2.*A32+A42)*h/6.;// + 0*B.arr[i+n]*sigma[1]*sqrt(h);
+      t += h;
 
-    t += h;
-
-    fprintf(fout,"%Lf \t %Lf \t %Lf\n",t,x,K);
-  }
+      fprintf(fout,"%Lf \t %Lf \t %Lf\n",t,x,K);
+    }
 
   fclose(fout);
 
   gettimeofday( & end, NULL);
   all_time = (end.tv_sec - start.tv_sec) + (float)(end.tv_usec - start.tv_usec) / 1000000.0;
-  printf("Run time:\t%f s\n", all_time);
   flog = fopen(logfile, "a");
-  fprintf(flog, "\nRun time:\t%f s\n\n", all_time);
+  fprintf(flog, "\nTempo de execução:\t%f s\n\n", all_time);
   fclose(flog);
   flog = fopen(logfile, "a");
-  fprintf(flog, "------------End time------------\n");
+  fprintf(flog, "------------ Fim ------------\n");
   fclose(flog);
   if(system(tmp)) printf("Ok");
   return 1;

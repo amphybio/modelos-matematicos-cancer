@@ -28,41 +28,42 @@
 #       CRIAÇÃO:  29/08/2019
 #       REVISÃO:  01/09/2019 Alan U. Sabino <alan.sabino@usp.br> (1)
 #===============================================================================
-
-# Gnuplot script file for plotting data in file "hist_n12_nm6432_d2346.out"
-# This file is called barr-hyp-mesh_n12_nm6432_d2346.plt
-reset
+# Definir tamanho da figura (padrão em polegadas)
 set size 1.4, 0.618034
-set terminal postscript portrait enhanced color lw 2 "Helvetica" 25 dashed
+
+# Indicar caracteristicas desejadas da saída.
+# terminal postscript: arquivo de saída em formato vetorial PS/EPS
+# portrait: orientação
+# enhanced: melhorar fontes
+# lw (linewidth): define escala padrão da espessura das linhas
+# "Helvetica" 25: define padrão para tipo e tamanho da fonte
+set terminal postscript portrait enhanced color lw 2 "Helvetica" 25
+
+# Definir nome e extensão do arquivo de saída
 set output "capacidade_dinamica.eps"
-#set terminal fig portrait color font "Helvetica" inches dashed
-#set output "DNAreading.fig"
-#set terminal x11 enhanced
 
-set   autoscale                        # scale axes automatically
-unset log                              # remove any log-scaling
-unset label                            # remove any previous labels
-set key right bottom
+# Definir legenda dos eixos x(xtics) e y(ytics).
+# auto: permite que o gnuplot decida a escala da legenda no eixo.
+set xtics auto
+set ytics auto
 
-set xtics auto                          # set xtics automatically
-set ytics auto                          # set ytics automatically
-#set label "{/Helvetica-Bold 1.}" at 0.9,142
-
-set grid
-
-set xtics offset 0,0.25
-set ytics offset 0.8,0
-
+# Definir legenda dos eixos.
 set xlabel "{/Helvetica Tempo (UA)}"
 set ylabel "{/Helvetica Volume (UA)}"
 
-set xlabel offset 0,0
-set ylabel offset 0.5,0
-
-unset xr #[0:4]
-unset yr #[0:10000]
-
+# Definir título da figura.
 set title "{/Helvetica Crescimento tumoral}"
 
-plot 'par1.out' using 1:2 title "Capacity" with lines lc rgb "blue" lw 2, \
-     'par1.out' using 1:3 title "Cell density" with lines lc rgb "red" lw 2
+# Definir grade.
+set grid
+
+# Definir posição da legenda do gráfico.
+set key right bottom
+
+# Desenhar as saídas das funções
+# title: define legenda dos dados representados
+# lines: define representação em linhas
+# lc (linecolor): define cor
+# lw (linewidth): define espessura
+plot 'parametros-1.out' using 1:2 title "Capacidade" with lines lc rgb "blue" lw 2, \
+     'parametros-1.out' using 1:3 title "Densidade" with lines lc rgb "red" lw 2
