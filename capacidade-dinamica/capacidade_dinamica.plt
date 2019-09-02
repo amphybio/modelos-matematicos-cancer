@@ -40,7 +40,9 @@ set size 1.4, 0.618034
 set terminal postscript portrait enhanced color lw 2 "Helvetica" 25
 
 # Definir nome e extensão do arquivo de saída
-set output "capacidade_dinamica.eps"
+# Neste caso, 'saida' esta como uma variavel que deve ser passada como
+# paramêtro na chamada do script gnuplot pela opção '-e'
+set output saida
 
 # Definir legenda dos eixos x(xtics) e y(ytics).
 # auto: permite que o gnuplot decida a escala da legenda no eixo.
@@ -65,5 +67,7 @@ set key right bottom
 # lines: define representação em linhas
 # lc (linecolor): define cor
 # lw (linewidth): define espessura
-plot 'parametros-1.out' using 1:2 title "Capacidade" with lines lc rgb "blue" lw 2, \
-     'parametros-1.out' using 1:3 title "Densidade" with lines lc rgb "red" lw 2
+# entrada: nome do arquivo de entrada que deve ser passado como
+# paramêtro na chamada do script gnuplot pela opção '-e'
+plot entrada using ($1):($2) title "Capacidade" with lines lc rgb "blue" lw 2, \
+     entrada using ($1):($3) title "Densidade" with lines lc rgb "red" lw 2

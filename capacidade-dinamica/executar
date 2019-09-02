@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+#   Copyright (C) 2019 AMPhyBio
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with program.  If not, see <http://www.gnu.org/licenses/>.
+
+################################################################################
+#       ARQUIVO:  executar
+#
+#     DESCRIÇÃO:  Script shell que faz chamada ao programa crescdinam e gera
+#                 grafícos a partir do resultado.
+#
+#        OPÇÕES:  ---
+#    REQUISITOS:  gnuplot; imagemagick; crescdinam
+#          BUGS:  ---
+#         NOTAS:  ---
+#         AUTOR:  Alan U. Sabino <alan.sabino@usp.br>
+#        VERSÃO:  1.0
+#       CRIAÇÃO:  02/09/2019
+#       REVISÃO:  ---
+################################################################################
+
+# Variavel que irá armazenar o nome do arquivo de parametros de
+# entrada
+arquivo_parametros=$1
+
+# Armazena nome do arquivo de parâmetros sem a extensão
+nome_arquivos=${arquivo_parametros%.*}
+
+# Realizada chamada ao programa crescdinam para gerar resultados
+./crescdinam $nome_arquivos".in" $nome_arquivos".out" $nome_arquivos".log"
+
+# Executa script capacidade_dinamica.plt passando como parâmetros, já
+# definidos dentro do script, o nome do arquivo de saida gerado no
+# passo anterior e o nome e extensão, por exemplo eps, do arquivo de
+# imagem desejado
+gnuplot -e "entrada='$nome_arquivos.out'; saida='$nome_arquivos.eps'" capacidade_dinamica.plt
+
+# Converte a imagem do passo anterior para formato tif
+convert -flatten -density 300 -depth 8 -compress lzw $nome_arquivos".eps" $nome_arquivos".tif"
+
+# Remove arquivo eps
+rm -rf $nome_arquivos".eps"
