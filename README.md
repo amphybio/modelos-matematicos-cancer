@@ -28,33 +28,33 @@ gráfico.
 
   Antes de iniciar a instalação, é necessário atualizar o índice de
   pacotes do linux:
-
-    sudo apt-get update
-
+```shell
+sudo apt-get update
+```
   Instalar gnuplot:
-
-    sudo apt-get install gnuplot-x11
-
+```shell
+sudo apt-get install gnuplot-x11
+```
   Instalar ImageMagick:
-
-    sudo apt-get install imagemagick
-
+```shell
+sudo apt-get install imagemagick
+```
 #### Baixando e Executando os *scripts*
 
   1) Nesta página, clicar no botão verde com o texto ***clone or
   download*** e baixar arquivo zip. <br/>
   2) Descompactar arquivo zip pela linha de comando:
-
-    unzip modelos-matematicos-cancer-master.zip
-
+```shell
+unzip modelos-matematicos-cancer-master.zip
+```
   3) Mudar para o diretório em que se deseja gerar o gráfico:
-
-    cd modelos-matematicos-cancer-master/Exponencial/
-
+```
+cd modelos-matematicos-cancer-master/Exponencial/
+```
   4) Executar o *script* usando o gnuplot:
-
-    gnuplot exponencial.plt
-
+```shell
+gnuplot exponencial.plt
+```
   Os comandos acima são um exemplo para o caso que se deseja gerar os
   gráficos do modelo exponencial. Para gerar os gráficos dos demais
   modelos, basta alterar o diretório (passo 3) e o nome do *script*
@@ -64,9 +64,9 @@ gráfico.
   um formato vetorizado), mas caso desejável é possível converter para
   outros formatos de arquivo através do ImageMagick. Como, por
   exemplo, o formato *tif*:
-
-    convert -flatten -density 300 -depth 8 -compress lzw exponencial.eps exponencial.tif
-
+```shell
+convert -flatten -density 300 -depth 8 -compress lzw exponencial.eps exponencial.tif
+```
   - -flatten: remove transparência
   - -density: especifica a resolução (em *dots per inch*)
   - -depth: determina a profundidade de cor
