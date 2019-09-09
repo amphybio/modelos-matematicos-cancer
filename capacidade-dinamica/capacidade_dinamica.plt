@@ -69,5 +69,6 @@ set key right bottom
 # lw (linewidth): define espessura
 # entrada: nome do arquivo de entrada que deve ser passado como
 # paramêtro na chamada do script gnuplot pela opção '-e'
-plot entrada using ($1):($2) title "Capacidade" with lines lc rgb "blue" lw 2, \
-     entrada using ($1):($3) title "Densidade" with lines lc rgb "red" lw 2
+plot entrada using ($1):($3) title "Capacidade" with lines lc rgb "blue" lw 2, \
+     entrada using ($1):($2) title "Densidade" with lines lc rgb "red" lw 2
+
