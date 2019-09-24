@@ -14,9 +14,9 @@
 #   along with program.  If not, see <http://www.gnu.org/licenses/>.
 
 #===============================================================================
-#       ARQUIVO:  logistico_taxa.plt
+#       ARQUIVO:  competicao.plt
 #
-#     DESCRIÇÃO:  Script gnuplot que gera grafícos do modelo logístico
+#     DESCRIÇÃO:  Script gnuplot que gera grafícos do modelo de competição
 #
 #        OPÇÕES:  ---
 #    REQUISITOS:  gnuplot
@@ -24,10 +24,9 @@
 #         NOTAS:  ---
 #         AUTOR:  Alexandre F. Ramos <alex.ramos@usp.br>
 #        VERSÃO:  1.0
-#       CRIAÇÃO:  28/08/2019
-#       REVISÃO:  31/08/2019 Alan U. Sabino <alan.sabino@usp.br> (1)
+#       CRIAÇÃO:  29/08/2019
+#       REVISÃO:  24/09/2019 Alan U. Sabino <alan.sabino@usp.br> (1)
 #===============================================================================
-
 # Definir tamanho da figura (padrão em polegadas)
 set size 1.4, 0.618034
 
@@ -39,62 +38,35 @@ set size 1.4, 0.618034
 # "Helvetica" 25: define padrão para tipo e tamanho da fonte
 set terminal postscript portrait enhanced color lw 2 "Helvetica" 25 dashed
 
-# Definir nome e extensão do arquivo de saída.
-set output "logistico_taxa.eps"
+# Definir nome e extensão do arquivo de saída
+# Neste caso, 'saida' esta como uma variavel que deve ser passada como
+# paramêtro na chamada do script gnuplot pela opção '-e'
+set output saida
 
 # Definir legenda dos eixos x(xtics) e y(ytics).
 # auto: permite que o gnuplot decida a escala da legenda no eixo.
 set xtics auto
-set ytics ("0" 0,"" 0.25, "0.5" 0.50, "" 0.75, "1" 1 )
-
-# Definir tics apenas na base e à esquerda.
-set tics nomirror
-
-# Definir os valores mínimos e máximos dos eixos.
-set xr [0:40]
-set yr [-0.05:1]
+set ytics auto
 
 # Definir legenda dos eixos.
 set xlabel "{/Helvetica Tempo (UA)}"
-set ylabel "{/Helvetica Taxa}"
+set ylabel "{/Helvetica Volume (UA)}"
 
 # Definir título da figura.
-set title "{/Helvetica Taxa de crescimento tumoral {/Helvetica-Italic per capita}}"
-
-# Definir posição da legenda do gráfico.
-set key right top
+set title "{/Helvetica Crescimento tumoral}"
 
 # Definir grade.
 set grid
 
-# Variáveis das funções. Valores inteiros devem ser escritos seguidos
-# de ponto e zero (##.0) para que sejam representados como números do
-# conjunto dos reais.
-
-# K: capacidade.
-K = 100.0
-
-# c0: tamanho inicial.
-c0 = 1.0
-
-# lambda#: valores para taxa de crescimento.
-lambda1=0.25
-lambda2=0.5
-lambda3=0.75
-
-# c#(x): Função logística da taxa. c#(x) se diferencia nos valores do
-# parâmetro lambda.
-# x: tempo. O gnuplot varia de forma automática o valor desse parâmetro.
-c1(x) = 1-(c0/((K-c0)*exp(-lambda1*x)+c0))
-c2(x) = 1-(c0/((K-c0)*exp(-lambda2*x)+c0))
-c3(x) = 1-(c0/((K-c0)*exp(-lambda3*x)+c0))
+# Definir posição da legenda do gráfico.
+set key right bottom
 
 # Desenhar as saídas das funções
 # title: define legenda dos dados representados
 # lines: define representação em linhas
 # lc (linecolor): define cor
 # lw (linewidth): define espessura
-# /Symbol: expressa simbolos especiais (Ex. l para letra grega lambda)
-plot c1(x) title "{/Symbol l} = 0.25" with lines lc rgb "red" lw 2, \
-     c2(x) title "{/Symbol l} = 0.50" with lines lc rgb "blue" lw 2, \
-     c3(x) title "{/Symbol l} = 0.75" with lines lc rgb "green" lw 2
+# entrada: nome do arquivo de entrada que deve ser passado como
+# paramêtro na chamada do script gnuplot pela opção '-e'
+plot entrada using ($1):($3) title "Capacidade" with lines lc rgb "blue" lw 2, \
+     entrada using ($1):($2) title "Densidade" with lines lc rgb "red" lw 2

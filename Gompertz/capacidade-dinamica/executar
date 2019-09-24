@@ -51,4 +51,4 @@ gnuplot -e "entrada='$nome_arquivos.out'; saida='$nome_arquivos.eps'" capacidade
 convert -flatten -density 300 -depth 8 -compress lzw $nome_arquivos".eps" $nome_arquivos".tif"
 
 # Remove arquivo eps
-rm -rf $nome_arquivos".eps"
+#rm -rf $nome_arquivos".eps"

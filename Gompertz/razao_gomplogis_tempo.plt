@@ -14,18 +14,19 @@
 #   along with program.  If not, see <http://www.gnu.org/licenses/>.
 
 #===============================================================================
-#       ARQUIVO:  logistico_taxa.plt
+#       ARQUIVO:  razao_gomplogis_tempo.plt
 #
-#     DESCRIÇÃO:  Script gnuplot que gera grafícos do modelo logístico
+#     DESCRIÇÃO:  Script gnuplot que gera grafícos da razao entre os tempos do
+#                 modelo de Gompertz e o modelo logístico
 #
 #        OPÇÕES:  ---
 #    REQUISITOS:  gnuplot
 #          BUGS:  ---
 #         NOTAS:  ---
-#         AUTOR:  Alexandre F. Ramos <alex.ramos@usp.br>
+#         AUTOR:  Alan U. Sabino <alan.sabino@usp.br>
 #        VERSÃO:  1.0
-#       CRIAÇÃO:  28/08/2019
-#       REVISÃO:  31/08/2019 Alan U. Sabino <alan.sabino@usp.br> (1)
+#       CRIAÇÃO:  12/09/2019
+#       REVISÃO:  ---
 #===============================================================================
 
 # Definir tamanho da figura (padrão em polegadas)
@@ -37,32 +38,33 @@ set size 1.4, 0.618034
 # enhanced: melhorar fontes
 # lw (linewidth): define escala padrão da espessura das linhas
 # "Helvetica" 25: define padrão para tipo e tamanho da fonte
-set terminal postscript portrait enhanced color lw 2 "Helvetica" 25 dashed
+set terminal postscript portrait enhanced color lw 2 "Helvetica" 25
 
 # Definir nome e extensão do arquivo de saída.
-set output "logistico_taxa.eps"
+set output "razao_gomplogis_tempo.eps"
 
 # Definir legenda dos eixos x(xtics) e y(ytics).
 # auto: permite que o gnuplot decida a escala da legenda no eixo.
 set xtics auto
-set ytics ("0" 0,"" 0.25, "0.5" 0.50, "" 0.75, "1" 1 )
+set ytics ("0" 0,"0.22" 0.22, "0.4" 0.40, "0.6" 0.6, "0.75" 0.75)
 
 # Definir tics apenas na base e à esquerda.
 set tics nomirror
 
 # Definir os valores mínimos e máximos dos eixos.
-set xr [0:40]
-set yr [-0.05:1]
+set xr [0:100]
+set yr [0.22:0.75]
 
 # Definir legenda dos eixos.
-set xlabel "{/Helvetica Tempo (UA)}"
-set ylabel "{/Helvetica Taxa}"
+set encoding utf8
+set xlabel "{/Helvetica Densidade (UA)}"
+set ylabel "{/Helvetica Razão tempo (UA)}"
 
 # Definir título da figura.
-set title "{/Helvetica Taxa de crescimento tumoral {/Helvetica-Italic per capita}}"
+set title "{/Helvetica Razão dos tempos Gompertz / logístico}"
 
 # Definir posição da legenda do gráfico.
-set key right top
+set key left top
 
 # Definir grade.
 set grid
@@ -75,26 +77,36 @@ set grid
 K = 100.0
 
 # c0: tamanho inicial.
-c0 = 1.0
+c01 = 1.0
+c02 = 2.0
+c03 = 4.0
+
+# e0:
+e01 = c01 / K
+e02 = c02 / K
+e03 = c03 / K
+#e0(x) = x / K
 
 # lambda#: valores para taxa de crescimento.
-lambda1=0.25
-lambda2=0.5
-lambda3=0.75
+lambda=0.5
 
-# c#(x): Função logística da taxa. c#(x) se diferencia nos valores do
-# parâmetro lambda.
-# x: tempo. O gnuplot varia de forma automática o valor desse parâmetro.
-c1(x) = 1-(c0/((K-c0)*exp(-lambda1*x)+c0))
-c2(x) = 1-(c0/((K-c0)*exp(-lambda2*x)+c0))
-c3(x) = 1-(c0/((K-c0)*exp(-lambda3*x)+c0))
+tg1(x) = (1.0/lambda)*log(log(e01)/log(x/K))
+tl1(x) = (1.0/lambda)*log(((1.0-e01)/(1.0-(x/K)))*((x/K)/e01))
 
-# Desenhar as saídas das funções
-# title: define legenda dos dados representados
-# lines: define representação em linhas
-# lc (linecolor): define cor
-# lw (linewidth): define espessura
-# /Symbol: expressa simbolos especiais (Ex. l para letra grega lambda)
-plot c1(x) title "{/Symbol l} = 0.25" with lines lc rgb "red" lw 2, \
-     c2(x) title "{/Symbol l} = 0.50" with lines lc rgb "blue" lw 2, \
-     c3(x) title "{/Symbol l} = 0.75" with lines lc rgb "green" lw 2
+tg2(x) = (1.0/lambda)*log(log(e02)/log(x/K))
+tl2(x) = (1.0/lambda)*log(((1.0-e02)/(1.0-(x/K)))*((x/K)/e02))
+
+tg3(x) = (1.0/lambda)*log(log(e03)/log(x/K))
+tl3(x) = (1.0/lambda)*log(((1.0-e03)/(1.0-(x/K)))*((x/K)/e03))
+
+#tg1(x) = (1.0/lambda1)*log(log(e0(x))/log(x/K))
+#tg2(x) = (1.0/lambda2)*log(log(e0(x))/log(x/K))
+#tg3(x) = (1.0/lambda3)*log(log(e0(x))/log(x/K))
+#
+#tl1(x) = (1.0/lambda1)*log(((1.0-e0(x))/(1.0-(x/K)))*((x/K)/e0(x)))
+#tl2(x) = (1.0/lambda2)*log(((1.0-e0(x))/(1.0-(x/K)))*((x/K)/e0(x)))
+#tl3(x) = (1.0/lambda3)*log(((1.0-e0(x))/(1.0-(x/K)))*((x/K)/e0(x)))
+
+plot (tg1(x)/tl1(x)) title "{/Symbol e_0} = 1"with lines lc rgb "red" lw 2, \
+     (tg2(x)/tl2(x)) title "{/Symbol e_0} = 2"with lines lc rgb "blue" lw 2, \
+     (tg3(x)/tl3(x)) title "{/Symbol e_0} = 4"with lines lc rgb "green" lw 2

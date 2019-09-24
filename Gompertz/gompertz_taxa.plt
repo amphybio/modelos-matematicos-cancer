@@ -45,14 +45,14 @@ set output "gompertz_taxa.eps"
 # Definir legenda dos eixos x(xtics) e y(ytics).
 # auto: permite que o gnuplot decida a escala da legenda no eixo.
 set xtics auto
-set ytics ("0" 0, "" 1.25, "2.5" 2.5, "" 3.75, "5" 5.0)
+set ytics ("0" 0, "" 1.25, "2.5" 2.5, "" 3.75, "4.5" 4.5)
 
 # Definir tics apenas na base e à esquerda.
 set tics nomirror
 
 # Definir os valores mínimos e máximos dos eixos.
-set xr [0:25]
-set yr [0:5]
+set xr [0:20]
+set yr [-0.15:4.7]
 
 # Definir legenda dos eixos.
 set xlabel "{/Helvetica Tempo (UA)}"
